@@ -9,12 +9,12 @@ const App = () => {
     longitude: -122.45,
     zoom: 14,
   });
+  const accessToken = process.env.REACT_APP_STRING;
+  console.log(process.env.REACT_APP_STRING && process.env.REACT_APP_STRING);
 
   return (
     <ReactMapGL
-      mapboxApiAccessToken={
-        "pk.eyJ1IjoiYW53YXJzciIsImEiOiJja3dsbXp0MzUyM3J1MnBxaTFqMzdvemx6In0.6DFQZ2-AUWxf2I2OmoUa1A"
-      }
+      mapboxApiAccessToken={accessToken}
       {...viewport}
       onViewportChange={(viewport: any) => setViewport(viewport)}
     />
