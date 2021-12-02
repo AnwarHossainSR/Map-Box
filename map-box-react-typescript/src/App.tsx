@@ -1,5 +1,5 @@
 import { useState } from "react";
-import ReactMapGL, { Marker } from "react-map-gl";
+import ReactMapGL, { Marker, GeolocateControl } from "react-map-gl";
 
 interface ViewPort {
   width: number;
@@ -21,6 +21,11 @@ const App = () => {
     bearing: 0,
     pitch: 0,
   });
+  const geolocateControlStyle = {
+    right: 10,
+    top: 10,
+  };
+
   const accessToken: string | undefined = process.env.REACT_APP_AccessToken;
   return (
     <ReactMapGL
@@ -29,6 +34,12 @@ const App = () => {
       {...viewport}
       onViewportChange={(viewport: ViewPort) => setViewport(viewport)}
     >
+      <GeolocateControl
+        style={geolocateControlStyle}
+        positionOptions={{ enableHighAccuracy: true }}
+        trackUserLocation={true}
+        auto
+      />
       <Marker
         latitude={23.7937}
         longitude={90.4066}
@@ -39,7 +50,7 @@ const App = () => {
           alt="address"
           width={viewport.zoom * 3}
           height={viewport.zoom * 3}
-        /> 
+        />
       </Marker>
     </ReactMapGL>
   );
