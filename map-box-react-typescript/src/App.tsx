@@ -1,5 +1,5 @@
-import { useState } from "react";
-import ReactMapGL, { Marker, GeolocateControl } from "react-map-gl";
+import { useEffect, useState } from "react";
+import ReactMapGL, { GeolocateControl, Marker } from "react-map-gl";
 
 interface ViewPort {
   width: number;
@@ -26,33 +26,51 @@ const App = () => {
     top: 10,
   };
 
+  const [count, setcount] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((position) => {
+          console.log(`Latitude is :`, position.coords.latitude);
+          //console.log("Longitude is :", position.coords.longitude);
+          setcount(position.coords.latitude);
+        });
+      }
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [count]);
+
   const accessToken: string | undefined = process.env.REACT_APP_AccessToken;
   return (
-    <ReactMapGL
-      mapboxApiAccessToken={accessToken}
-      mapStyle="mapbox://styles/mapbox/dark-v9"
-      {...viewport}
-      onViewportChange={(viewport: ViewPort) => setViewport(viewport)}
-    >
-      <GeolocateControl
-        style={geolocateControlStyle}
-        positionOptions={{ enableHighAccuracy: true }}
-        trackUserLocation={true}
-        auto
-      />
-      <Marker
-        latitude={23.7937}
-        longitude={90.4066}
-        offsetTop={-viewport.zoom * 3}
+    <>
+      {count}
+      <ReactMapGL
+        mapboxApiAccessToken={accessToken}
+        mapStyle="mapbox://styles/mapbox/dark-v9"
+        {...viewport}
+        onViewportChange={(viewport: ViewPort) => setViewport(viewport)}
       >
-        <img
-          src="https://icons.iconarchive.com/icons/paomedia/small-n-flat/1024/map-marker-icon.png"
-          alt="address"
-          width={viewport.zoom * 3}
-          height={viewport.zoom * 3}
+        <GeolocateControl
+          style={geolocateControlStyle}
+          positionOptions={{ enableHighAccuracy: true }}
+          trackUserLocation={true}
+          auto
         />
-      </Marker>
-    </ReactMapGL>
+        <Marker
+          latitude={23.7937}
+          longitude={90.4066}
+          offsetTop={-viewport.zoom * 3}
+        >
+          <img
+            src="https://icons.iconarchive.com/icons/paomedia/small-n-flat/1024/map-marker-icon.png"
+            alt="address"
+            width={viewport.zoom * 3}
+            height={viewport.zoom * 3}
+          />
+        </Marker>
+      </ReactMapGL>
+    </>
   );
 };
 
